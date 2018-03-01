@@ -33,7 +33,6 @@ const TABLE_RESIZE_MODE_LAST_COLUMN = 'last_column';
 const SELECTION_MODE_SINGLE = 'single';
 const SELECTION_MODE_MULTIPLE = 'multiple';
 
-@tagName('table')
 @classNames('et-table')
 export default class EmberTable extends Component {
   layout = layout;
@@ -187,6 +186,10 @@ export default class EmberTable extends Component {
    */
   _tableResizeSensor = null;
 
+  _headerResizeSensor = null;
+  _bodyResizeSensor = null;
+  _footerResizeSensor = null;
+
   /**
    * Handlers used for synchronizing scroll positions across the scroll containers
    */
@@ -232,16 +235,71 @@ export default class EmberTable extends Component {
       this.get('selectionMode') === 'multiple' || !this.get('columns').some((c) => c.isCheckbox)
     );
 
-    this.setupScrollSync();
+    let bodyTopOffset = this.getChildElement('thead').getBoundingClientRect().height;
+    let bodyBottomOffset = this.getChildElement('tfoot').getBoundingClientRect().height;
+    let containerHeight = this.element.parentElement.offsetHeight;
+    let maxBodyHeight = containerHeight - bodyTopOffset - bodyBottomOffset;
+
+    this.getChildElement('tbody').style.marginTop = bodyTopOffset + 'px';
+    this.getChildElement('tbody').style.marginBottom = bodyTopOffset + 'px';
+
+    this.element.addEventListener('scroll', () => {
+      let leftOffset = this.element.scrollLeft;
+      let top = this.element.scrollTop;
+      this.getChildElement('thead').style.transform = `translateY(${top}px)`;
+      this.getChildElement('tfoot').style.transform = `translateY(${top - 2}px)`;
+
+      if (this.get('numFixedColumns') > 0) {
+        let allFixedCells = this.element.querySelectorAll('tr > *:first-child');
+        allFixedCells.forEach((cellElement) => {
+          cellElement.style.transform = `translateX(${leftOffset}px)`;
+        });
+      }
+    });
+
     this.setupColumnFillup();
+    this.setupBodyPosition();
   }
 
   willDestroyElement() {
     this.teardownColumnFillup();
-    this.teardownScrollSync();
     this.token.cancel();
 
     super.willDestroyElement(...arguments);
+  }
+
+  getChildElement(tagName) {
+    return this.element.getElementsByTagName(tagName)[0];
+  }
+
+  positionHeaderBodyFooter() {
+    let headerHeight = this.getChildElement('thead').getBoundingClientRect().height;
+    let footerHeight = this.getChildElement('tfoot').getBoundingClientRect().height;
+    let bodyHeight = this.getChildElement('tbody').getBoundingClientRect().height;
+
+    let containerHeight = this.element.parentElement.offsetHeight;
+    let maxBodyContainerHeight = containerHeight - headerHeight - footerHeight;
+
+    this.element.getElementsByTagName('tfoot')[0].style.top =
+        (Math.min(maxBodyContainerHeight, bodyHeight) + headerHeight) + 'px';
+
+    this.element.style.height = Math.min(headerHeight + bodyHeight + footerHeight, containerHeight) + 'px';
+  }
+
+  setupBodyPosition() {
+    scheduler.schedule('sync', () => {
+      this.positionHeaderBodyFooter();
+    }, this.token);
+
+    this._headerResizeSensor = new ResizeSensor(this.getChildElement('thead'), () => {
+      this.positionHeaderBodyFooter();
+    });
+    this._bodyResizeSensor = new ResizeSensor(this.getChildElement('tbody'), () => {
+      this.positionHeaderBodyFooter();
+    });
+    this._footerResizeSensor = new ResizeSensor(this.getChildElement('tfoot'), () => {
+      this.positionHeaderBodyFooter();
+    });
   }
 
   /**
@@ -266,100 +324,10 @@ export default class EmberTable extends Component {
   }
 
   /**
-   * Syncs horizontal scrolling between table, header, body & footer.
-   */
-  setupScrollSync() {
-    let scrollBar = this.element.querySelector('.et-horizontal-scroll-wrapper');
-
-    let bodyScrollContainer = this.element.querySelector('tbody');
-    let headerScrollContainer = this.element.querySelector('thead');
-    let footerScrollContainer = this.element.querySelector('tfoot');
-
-    let scrollElements = [
-      bodyScrollContainer,
-      headerScrollContainer,
-      footerScrollContainer
-    ].filter((item) => {
-      return item;
-    });
-
-    let prevClientX, prevClientY;
-
-    this._wheelHandler = (event) => {
-      if (Math.abs(event.deltaX) < Math.abs(event.deltaY)) {
-        return;
-      }
-
-      event.preventDefault();
-
-      scrollBar.scrollLeft += event.deltaX;
-
-      for (let scrollElement of scrollElements) {
-        scrollElement.scrollLeft = scrollBar.scrollLeft;
-      }
-    };
-
-    this._scrollHandler = () => {
-      for (let scrollElement of scrollElements) {
-        scrollElement.scrollLeft = scrollBar.scrollLeft;
-      }
-    };
-
-    this._touchstartHandler = (event) => {
-      let [{ clientX, clientY }] = event.touches;
-
-      prevClientX = clientX;
-      prevClientY = clientY;
-    };
-
-    this._touchmoveHandler = (event) => {
-      let [{ clientX, clientY }] = event.touches;
-
-      let deltaX = clientX - prevClientX;
-      let deltaY = clientY - prevClientY;
-
-      if (Math.abs(deltaX) < Math.abs(deltaY)) {
-        return;
-      }
-
-      event.preventDefault();
-
-      scrollBar.scrollLeft -= deltaX;
-
-      for (let scrollElement of scrollElements) {
-        scrollElement.scrollLeft = scrollBar.scrollLeft;
-      }
-
-      prevClientX = clientX;
-      prevClientY = clientY;
-    };
-
-    this.element.addEventListener('wheel', this._wheelHandler);
-    scrollBar.addEventListener('scroll', this._scrollHandler);
-
-    bodyScrollContainer.addEventListener('touchstart', this._touchstartHandler);
-    bodyScrollContainer.addEventListener('touchmove', this._touchmoveHandler);
-  }
-
-  /**
    * Teardown the column fillup listeners
    */
   teardownColumnFillup() {
     this.get('_tableResizeSensor').detach(this.element);
-  }
-
-  /**
-   * Teardown the scroll syncing
-   */
-  teardownScrollSync() {
-    let scrollBar = this.element.querySelector('.et-horizontal-scroll-wrapper');
-    let bodyScrollContainer = this.element.querySelector('tbody');
-
-    this.element.removeEventListener('wheel', this._wheelHandler);
-    scrollBar.removeEventListener('scroll', this._scrollHandler);
-
-    bodyScrollContainer.removeEventListener('touchstart', this._touchstartHandler);
-    bodyScrollContainer.removeEventListener('touchmove', this._touchmoveHandler);
   }
 
   /**

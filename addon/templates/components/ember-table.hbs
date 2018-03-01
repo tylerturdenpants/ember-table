@@ -1,4 +1,4 @@
-<div class="et-thead-container">
+<table>
   <thead class="et-thead">
     <tr class="et-tr">
       {{#each columns as |column columnIndex|}}
@@ -38,14 +38,11 @@
       </tr>
     {{/if}}
   </thead>
-</div>
-
-<div class="et-tbody-container" data-test-body-container>
   <tbody class="et-tbody">
     {{#vertical-collection rows
       estimateHeight=estimateRowHeight
       staticHeight=staticHeight
-      containerSelector=".et-tbody-container"
+      containerSelector=".et-table"
 
       as |rowValue rowIndex|
     }}
@@ -56,10 +53,8 @@
       }}
     {{/vertical-collection}}
   </tbody>
-</div>
 
-{{#if footerRows}}
-  <div class="et-tfoot-container">
+  {{#if footerRows}}
     <tfoot class="et-tfoot">
       {{#each footerRows as |footerRow footerRowIndex|}}
         <tr class="et-tr">
@@ -76,10 +71,6 @@
         </tr>
       {{/each}}
     </tfoot>
-  </div>
-{{/if}}
-
-<div class="et-horizontal-scroll-wrapper" style={{horizontalScrollWrapperStyle}}>
-  <div class="et-horizontal-scroll" style={{horizontalScrollStyle}} />
-</div>
+  {{/if}}
+</table>
 
