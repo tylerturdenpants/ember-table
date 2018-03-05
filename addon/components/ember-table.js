@@ -252,9 +252,9 @@ export default class EmberTable extends Component {
 
       if (this.get('numFixedColumns') > 0) {
         let allFixedCells = this.element.querySelectorAll('tr > *:first-child');
-        allFixedCells.forEach((cellElement) => {
-          cellElement.style.transform = `translateX(${leftOffset}px)`;
-        });
+        for (let i = 0; i < allFixedCells.length; i++) {
+          allFixedCells[i].style.transform = `translateX(${leftOffset}px)`;
+        }
       }
     });
 
