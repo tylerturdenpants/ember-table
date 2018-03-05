@@ -15,6 +15,7 @@ import { run } from '@ember/runloop';
 import Component from '@ember/component';
 import CellProxy from '../utils/cell-proxy';
 import { move } from '../utils/array';
+import ResizeSensor2 from '../utils/resize-sensor';
 import { get, set } from '@ember/object';
 import { isNone } from '@ember/utils';
 import { A as emberA } from '@ember/array';
@@ -291,13 +292,13 @@ export default class EmberTable extends Component {
       this.positionHeaderBodyFooter();
     }, this.token);
 
-    this._headerResizeSensor = new ResizeSensor(this.getChildElement('thead'), () => {
+    this._headerResizeSensor = new ResizeSensor2(this.getChildElement('thead'), () => {
       this.positionHeaderBodyFooter();
     });
-    this._bodyResizeSensor = new ResizeSensor(this.getChildElement('tbody'), () => {
+    this._bodyResizeSensor = new ResizeSensor2(this.getChildElement('tbody'), () => {
       this.positionHeaderBodyFooter();
     });
-    this._footerResizeSensor = new ResizeSensor(this.getChildElement('tfoot'), () => {
+    this._footerResizeSensor = new ResizeSensor2(this.getChildElement('tfoot'), () => {
       this.positionHeaderBodyFooter();
     });
   }
@@ -311,7 +312,7 @@ export default class EmberTable extends Component {
       this.fillupColumn();
     }, this.token);
 
-    this._tableResizeSensor = new ResizeSensor(this.element, () => {
+    this._tableResizeSensor = new ResizeSensor2(this.element, () => {
       run(() => {
         if (this.get('isDestroying')) {
           return;
@@ -328,6 +329,9 @@ export default class EmberTable extends Component {
    */
   teardownColumnFillup() {
     this.get('_tableResizeSensor').detach(this.element);
+    this.get('_headerResizeSensor').detach(this.element);
+    this.get('_bodyResizeSensor').detach(this.element);
+    this.get('_footerResizeSensor').detach(this.element);
   }
 
   /**
