@@ -16,6 +16,7 @@ import Component from '@ember/component';
 import CellProxy from '../utils/cell-proxy';
 import { move } from '../utils/array';
 import ResizeSensor2 from '../utils/resize-sensor';
+import { extractNumber } from '../utils/ui';
 import { get, set } from '@ember/object';
 import { isNone } from '@ember/utils';
 import { A as emberA } from '@ember/array';
@@ -247,8 +248,12 @@ export default class EmberTable extends Component {
     this.element.addEventListener('scroll', () => {
       let leftOffset = this.element.scrollLeft;
       let top = this.element.scrollTop;
-      this.getChildElement('thead').style.transform = `translateY(${top}px)`;
-      this.getChildElement('tfoot').style.transform = `translateY(${top - 2}px)`;
+
+      let tableBorderTop = extractNumber(getComputedStyle(this.element).getPropertyValue('border-top-width'));
+      let tableBorderBottom = extractNumber(getComputedStyle(this.element).getPropertyValue('border-bottom-width'));
+
+      this.getChildElement('thead').style.transform = `translate3d(0, ${top - tableBorderTop - tableBorderBottom}px, 0)`;
+      this.getChildElement('tfoot').style.transform = `translate3d(0, ${top - tableBorderTop - tableBorderBottom}px, 0)`;
 
       if (this.get('numFixedColumns') > 0) {
         let allFixedCells = this.element.querySelectorAll('tr > *:first-child');
