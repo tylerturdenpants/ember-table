@@ -2,6 +2,7 @@
   position: relative;
   overflow: scroll;
   height: 100%;
+  min-height:100%;
   width: 100%;
   border-collapse: collapse;
   box-sizing: border-box;
@@ -9,17 +10,17 @@
   .et-thead {
     position: absolute;
     top: 0;
-    z-index: 2;
     box-sizing: border-box;
   }
 
   .et-tbody {
     position: absolute;
-    box-sizing: border-box;
+    overflow: scroll;
   }
 
   .et-tfoot {
     position: absolute;
-    box-sizing: border-box;
+    top: 100%;
+    transform: translateY(-100%);
   }
 }

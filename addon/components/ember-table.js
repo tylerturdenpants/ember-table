@@ -237,23 +237,9 @@ export default class EmberTable extends Component {
       this.get('selectionMode') === 'multiple' || !this.get('columns').some((c) => c.isCheckbox)
     );
 
-    let bodyTopOffset = this.getChildElement('thead').getBoundingClientRect().height;
-    let bodyBottomOffset = this.getChildElement('tfoot').getBoundingClientRect().height;
-    let containerHeight = this.element.parentElement.offsetHeight;
-    let maxBodyHeight = containerHeight - bodyTopOffset - bodyBottomOffset;
-
-    this.getChildElement('tbody').style.marginTop = bodyTopOffset + 'px';
-    this.getChildElement('tbody').style.marginBottom = bodyTopOffset + 'px';
-
+    this.positionHeaderBodyFooter();
     this.element.addEventListener('scroll', () => {
       let leftOffset = this.element.scrollLeft;
-      let top = this.element.scrollTop;
-
-      let tableBorderTop = extractNumber(getComputedStyle(this.element).getPropertyValue('border-top-width'));
-      let tableBorderBottom = extractNumber(getComputedStyle(this.element).getPropertyValue('border-bottom-width'));
-
-      this.getChildElement('thead').style.transform = `translate3d(0, ${top - tableBorderTop - tableBorderBottom}px, 0)`;
-      this.getChildElement('tfoot').style.transform = `translate3d(0, ${top - tableBorderTop - tableBorderBottom}px, 0)`;
 
       if (this.get('numFixedColumns') > 0) {
         let allFixedCells = this.element.querySelectorAll('tr > *:first-child');
@@ -281,15 +267,10 @@ export default class EmberTable extends Component {
   positionHeaderBodyFooter() {
     let headerHeight = this.getChildElement('thead').getBoundingClientRect().height;
     let footerHeight = this.getChildElement('tfoot').getBoundingClientRect().height;
-    let bodyHeight = this.getChildElement('tbody').getBoundingClientRect().height;
+    let bodyHeightOffset = headerHeight + footerHeight;
 
-    let containerHeight = this.element.parentElement.offsetHeight;
-    let maxBodyContainerHeight = containerHeight - headerHeight - footerHeight;
-
-    this.element.getElementsByTagName('tfoot')[0].style.top =
-        (Math.min(maxBodyContainerHeight, bodyHeight) + headerHeight) + 'px';
-
-    this.element.style.height = Math.min(headerHeight + bodyHeight + footerHeight, containerHeight) + 'px';
+    this.getChildElement('tbody').style.transform = `translatey(${headerHeight}px)`;
+    this.getChildElement('tbody').style.height = `calc(100% - ${bodyHeightOffset}px)`;
   }
 
   setupBodyPosition() {
