@@ -238,16 +238,26 @@ export default class EmberTable extends Component {
     );
 
     this.positionHeaderBodyFooter();
-    this.element.addEventListener('scroll', () => {
-      let leftOffset = this.element.scrollLeft;
+    if (this.get('numFixedColumns') > 0) {
+      this.element.addEventListener('scroll', () => {
+        let leftOffset = this.element.scrollLeft;
 
-      if (this.get('numFixedColumns') > 0) {
         let allFixedCells = this.element.querySelectorAll('tr > *:first-child');
         for (let i = 0; i < allFixedCells.length; i++) {
-          allFixedCells[i].style.transform = `translateX(${leftOffset}px)`;
+          allFixedCells[i].style.transform = `translate3D(${leftOffset}px, 0px, 0px)`;
         }
-      }
-    });
+      });
+
+      let tbody = this.getChildElement('tbody');
+      tbody.addEventListener('scroll', () => {
+        let leftOffset = this.element.scrollLeft;
+        let allFixedCells = this.element.querySelectorAll('tr > *:first-child');
+        for (let i = 0; i < allFixedCells.length; i++) {
+          // console.log(allFixedCells[i].style.transform);
+          allFixedCells[i].style.transform = `translate3D(${leftOffset}px, 0px, 0px)`;
+        }
+      });
+    }
 
     this.setupColumnFillup();
     this.setupBodyPosition();

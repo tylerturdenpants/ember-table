@@ -6,10 +6,6 @@ module.exports = {
 
   options: {
     nodeAssets: {
-      'css-element-queries': {
-        srcDir: 'src',
-        import: ['ResizeSensor.js']
-      },
       'hammerjs': {
         import: ['hammer.js']
       }

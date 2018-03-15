@@ -24,11 +24,11 @@ export default Controller.extend({
 
   rows: computed(function() {
     let topRow = new TreeNode(null, this.getRow('Top Row'));
-    for (let i = 0; i < 3; i++) {
+    for (let i = 0; i < 10; i++) {
       let header = new TreeNode(topRow, this.getRow(`Header ${i}`));
-      for (let j = 0; j < 3; j++) {
+      for (let j = 0; j < 10; j++) {
         let group = new TreeNode(header, this.getRow(`Group ${j}`));
-        for (let k = 0; k < 3; k++) {
+        for (let k = 0; k < 10; k++) {
           group.addChild(new TreeNode(group, this.getRow(`Leaf ${k}`)));
         }
 
