@@ -3,6 +3,7 @@ export default class TreeNode {
   parent = null;
   children = null;
   value = null;
+  depth = 0;
 
   /**
    * Current next node (apply for both case expand & collapse).
@@ -60,6 +61,13 @@ export default class TreeNode {
     if (node !== null) {
       node.previous = this;
     }
+  }
+
+  /**
+   * Whether this node is a collapsed region of the tree
+   */
+  isInCollapsedRegion() {
+    return this.collapse || this.parent.nodeCountDelta < 0;
   }
 
   updateNext(nextNode) {

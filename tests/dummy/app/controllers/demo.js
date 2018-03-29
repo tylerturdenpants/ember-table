@@ -4,6 +4,7 @@ import LinkedListTree from '../utils/linked-list-tree';
 import { computed } from '@ember/object';
 import EmberObject from '@ember/object';
 import { A as emberA } from '@ember/array';
+import { isNone } from '@ember/utils';
 
 const COLUMN_COUNT = 13;
 const ALPHABET = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
@@ -11,6 +12,7 @@ const ALPHABET = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
 export default Controller.extend({
   showTable: true,
   showPanel: false,
+  rowToModify: 0,
 
   getRow(title) {
     let row = EmberObject.create({
@@ -80,11 +82,37 @@ export default Controller.extend({
     return footerRows;
   }),
 
+  rowNum: computed('rowToModify', function() {
+    let rowNum = parseInt(this.get('rowToModify'));
+    return isNaN(rowNum) ? null : rowNum;
+  }),
+
   actions: {
     onCellClicked(cell) {
       if (cell.get('columnIndex') !== 0) {
         cell.set('wasClicked', true);
       }
+    },
+    addRow() {
+      let rowNum = this.get('rowNum');
+      if (isNone(rowNum)) {
+        return;
+      }
+      let tree = this.get('rows');
+      let rowVal = this.getRow(`New Leaf at ${rowNum}`);
+      tree.add(rowVal, tree.objectAt(rowNum));
+    },
+    removeRow() {
+      let rowNum = this.get('rowNum');
+      if (isNone(rowNum)) {
+        return;
+      }
+      let tree = this.get('rows');
+      let row = tree.objectAt(rowNum);
+      if (!row) {
+        return;
+      }
+      tree.remove(row);
     }
   }
 });

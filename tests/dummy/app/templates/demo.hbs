@@ -23,3 +23,8 @@
     {{/tree-table-row}}
   {{/tree-table}}
 </div>
+<div class="demo-controls">
+  {{input value=rowToModify}}
+  <button {{action "addRow"}}>Add Row</button>
+  <button {{action "removeRow"}}>Remove Row</button>
+</div>
