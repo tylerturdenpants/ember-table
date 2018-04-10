@@ -6,7 +6,7 @@ import CollapseTree from '../-private/collapse-tree';
 import { computed } from '@ember-decorators/object';
 import { argument } from '@ember-decorators/argument';
 import { required } from '@ember-decorators/argument/validation';
-import { type, optional } from '@ember-decorators/argument/type';
+import { type } from '@ember-decorators/argument/type';
 
 export default class TreeTable extends EmberTable {
   layout = layout;
@@ -18,13 +18,12 @@ export default class TreeTable extends EmberTable {
 
   @argument
   @required
-  @type(optional('object'))
+  @type('object')
   tree;
 
   @computed('tree')
   get rows() {
-    let tree = this.get('tree');
-    return new CollapseTree(tree ? tree : []);
+    return new CollapseTree(this.get('tree'));
   }
 
   @computed('_baseApi')
