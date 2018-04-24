@@ -6,12 +6,12 @@ import { A as emberA } from '@ember/array';
 const COLUMN_COUNT = 13;
 const ALPHABET = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
 
-function generateRow(title) {
+function generateRow(title, colCount) {
   let row = EmberObject.create({
     id: title,
     children: []
   });
-  for (let j = 0; j < COLUMN_COUNT; j++) {
+  for (let j = 0; j < colCount; j++) {
     row.set(ALPHABET[j], ALPHABET[j]);
   }
   return row;
@@ -20,18 +20,20 @@ function generateRow(title) {
 export default Controller.extend({
   showTable: true,
   showPanel: false,
+  columnCount: COLUMN_COUNT + 1,
 
-  tree: computed(function() {
-    let tree = generateRow('Top Row');
+  tree: computed('columnCount', function() {
+    let colCount = this.get('columnCount');
+    let tree = generateRow('Top Row', colCount);
 
     for (let i = 0; i < 3; i++) {
-      let header = generateRow(`Header ${i}`);
+      let header = generateRow(`Header ${i}`, colCount);
 
       for (let j = 0; j < 3; j++) {
-        let group = generateRow(`Group ${j}`);
+        let group = generateRow(`Group ${j}`, colCount);
 
         for (let k = 0; k < 3; k++) {
-          group.children.push(generateRow(`Leaf ${k}`));
+          group.children.push(generateRow(`Leaf ${k}`, colCount));
         }
 
         header.children.push(group);
@@ -43,7 +45,7 @@ export default Controller.extend({
     return tree;
   }),
 
-  columns: computed(function() {
+  columns: computed('columnCount', function() {
     let arr = emberA();
     let columnWidth = 180;
 
@@ -55,7 +57,7 @@ export default Controller.extend({
       cellComponent: 'tree-table-grouping-cell'
     });
 
-    for (let j = 0; j < COLUMN_COUNT; j++) {
+    for (let j = 0; j < this.get('columnCount'); j++) {
       arr.pushObject({
         columnName: `Col ${ALPHABET[j % 26]}`,
         footerName: `Col ${ALPHABET[j % 26]}`,
@@ -84,6 +86,9 @@ export default Controller.extend({
       if (cell.get('columnIndex') !== 0) {
         cell.set('wasClicked', true);
       }
+    },
+    addColumn() {
+      this.set('columnCount', this.get('columnCount') + 1);
     }
   }
 });
