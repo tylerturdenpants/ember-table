@@ -2,12 +2,12 @@ import Component from '@ember/component';
 
 import { tagName } from '@ember-decorators/component';
 import { computed } from '@ember-decorators/object';
-import { bool, readOnly, or } from '@ember-decorators/object/computed';
+import { bool, reads, or } from '@ember-decorators/object/computed';
 
-import { argument } from '@ember-decorators/argument';
-import { required } from '@ember-decorators/argument/validation';
-import { type, optional } from '@ember-decorators/argument/type';
-import { Action } from '@ember-decorators/argument/types';
+// import { argument } from '@ember-decorators/argument';
+// import { required } from '@ember-decorators/argument/validation';
+// import { type, optional } from '@ember-decorators/argument/type';
+// import { Action } from '@ember-decorators/argument/types';
 
 import { SUPPORTS_INVERSE_BLOCK } from 'ember-compatibility-helpers';
 
@@ -43,18 +43,18 @@ export default class EmberTBody extends Component {
   /**
     The API object passed in by the table
   */
-  @argument
-  @required
-  @type('object')
+  // @argument
+  // @required
+  // @type('object')
   api;
 
   @or('api.api', 'api')
   unwrappedApi;
 
-  @readOnly('unwrappedApi.columnTree.leaves')
+  @reads('unwrappedApi.columnTree.leaves')
   columns;
 
-  @readOnly('unwrappedApi.columnTree.columnMetaCache')
+  @reads('unwrappedApi.columnTree.columnMetaCache')
   columnMetaCache;
 
   /**
@@ -63,8 +63,8 @@ export default class EmberTBody extends Component {
     deselects other rows), and 'multiple' (multiple rows can be selected through
     ctrl/cmd-click or shift-click).
   */
-  @argument({ defaultIfUndefined: true })
-  @type('string')
+  // @argument({ defaultIfUndefined: true })
+  // @type('string')
   checkboxSelectionMode = SELECT_MODE.MULTIPLE;
 
   /**
@@ -73,23 +73,23 @@ export default class EmberTBody extends Component {
     deselects other rows), and 'multiple' (multiple rows can be selected through
     ctrl/cmd-click or shift-click).
   */
-  @argument({ defaultIfUndefined: true })
-  @type('string')
+  // @argument({ defaultIfUndefined: true })
+  // @type('string')
   rowSelectionMode = SELECT_MODE.MULTIPLE;
 
   /**
     When true, this option causes selecting all of a node's children to also
     select the node itself.
   */
-  @argument({ defaultIfUndefined: true })
-  @type('boolean')
+  // @argument({ defaultIfUndefined: true })
+  // @type('boolean')
   selectingChildrenSelectsParent = true;
 
   /**
     The currently selected rows. Can either be an array or and individual row.
   */
-  @argument({ defaultIfUndefined: true })
-  @type(optional('object'))
+  // @argument({ defaultIfUndefined: true })
+  // @type(optional('object'))
   selection = null;
 
   /**
@@ -97,16 +97,16 @@ export default class EmberTBody extends Component {
 
     @param {object} selection - The new selection
   */
-  @argument
-  @type(optional(Action))
+  // @argument
+  // @type(optional(Action))
   onSelect = null;
 
   /**
     Estimated height for each row. This number is used to decide how many rows
     will be rendered at initial rendering.
   */
-  @argument({ defaultIfUndefined: true })
-  @type('number')
+  // @argument({ defaultIfUndefined: true })
+  // @type('number')
   estimateRowHeight = 30;
 
   /**
@@ -115,71 +115,71 @@ export default class EmberTBody extends Component {
     it is set to true, all rows have the same height equivalent to
     estimateRowHeight.
   */
-  @argument({ defaultIfUndefined: true })
-  @type('boolean')
+  // @argument({ defaultIfUndefined: true })
+  // @type('boolean')
   staticHeight = false;
 
   /**
     The number of extra rows to render on either side of the table's viewport
   */
-  @argument({ defaultIfUndefined: true })
-  @type('number')
+  // @argument({ defaultIfUndefined: true })
+  // @type('number')
   bufferSize = 20;
 
   /**
     A flag that tells the table to render all of its rows at once.
   */
-  @argument({ defaultIfUndefined: true })
-  @type('boolean')
+  // @argument({ defaultIfUndefined: true })
+  // @type('boolean')
   renderAll = false;
 
   /**
     An action that is triggered when the table reaches the first row.
   */
-  @argument
-  @type(optional(Action))
+  // @argument
+  // @type(optional(Action))
   firstReached = null;
 
   /**
     An action that is triggered when the table reaches the last row.
   */
-  @argument
-  @type(optional(Action))
+  // @argument
+  // @type(optional(Action))
   lastReached = null;
 
   /**
     An action that is triggered when the first visible row of the table changes.
   */
-  @argument
-  @type(optional(Action))
+  // @argument
+  // @type(optional(Action))
   firstVisibleChanged = null;
 
   /**
     An action that is triggered when the last visible row of the table changes.
   */
-  @argument
-  @type(optional(Action))
+  // @argument
+  // @type(optional(Action))
   lastVisibleChanged = null;
 
   /**
     Boolean flag that enables tree behavior if items have a `children` property
   */
-  @argument({ defaultIfUndefined: true })
-  @type('boolean')
+  // @argument({ defaultIfUndefined: true })
+  // @type('boolean')
   enableTree = true;
 
   /**
     Boolean flag that enables collapsing tree nodes
   */
-  @argument({ defaultIfUndefined: true })
-  @type('boolean')
+  // @argument({ defaultIfUndefined: true })
+  // @type('boolean')
   enableCollapse = true;
 
   /**
     The row items that the table should display
   */
-  @argument({ defaultIfUndefined: true })
-  @type('object')
+  // @argument({ defaultIfUndefined: true })
+  // @type('object')
   rows = [];
 
   /**
@@ -189,8 +189,8 @@ export default class EmberTBody extends Component {
     position with `idForFirstItem`. This is passed through to the
     vertical-collection.
   */
-  @argument({ defaultIfUndefined: true })
-  @type('string')
+  // @argument({ defaultIfUndefined: true })
+  // @type('string')
   key = '@identity';
 
   /**
@@ -199,16 +199,16 @@ export default class EmberTBody extends Component {
     with the provided id is at the top left on screen.
     If the item with id cannot be found, scrollTop is set to 0.
   */
-  @argument({ defaultIfUndefined: true })
-  @type(optional('string'))
+  // @argument({ defaultIfUndefined: true })
+  // @type(optional('string'))
   idForFirstItem = null;
 
   /**
     A selector string that will select the element from
     which to calculate the viewable height.
   */
-  @argument({ defaultIfUndefined: true })
-  @type('string')
+  // @argument({ defaultIfUndefined: true })
+  // @type('string')
   containerSelector = '';
 
   /**

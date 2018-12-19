@@ -3,10 +3,10 @@ import Component from '@ember/component';
 import { bind } from '@ember/runloop';
 import { A as emberA } from '@ember/array';
 
-import { argument } from '@ember-decorators/argument';
-import { required } from '@ember-decorators/argument/validation';
-import { type, optional } from '@ember-decorators/argument/type';
-import { Action } from '@ember-decorators/argument/types';
+// import { argument } from '@ember-decorators/argument';
+// import { required } from '@ember-decorators/argument/validation';
+// import { type, optional } from '@ember-decorators/argument/type';
+// import { Action } from '@ember-decorators/argument/types';
 import { computed } from '@ember-decorators/object';
 import { notEmpty, or } from '@ember-decorators/object/computed';
 import { tagName } from '@ember-decorators/component';
@@ -41,9 +41,9 @@ export default class EmberTHead extends Component {
   /**
     The API object passed in by the table
   */
-  @argument
-  @required
-  @type('object')
+  // @argument
+  // @required
+  // @type('object')
   api;
 
   @or('api.api', 'api')
@@ -52,44 +52,44 @@ export default class EmberTHead extends Component {
   /**
     The column definitions for the table
   */
-  @argument
-  @required
-  @type(Array)
+  // @argument
+  // @required
+  // @type(Array)
   columns;
 
   /**
     An ordered array of the sorts applied to the table
   */
-  @argument({ defaultIfUndefined: true })
-  @type(Array)
+  // @argument({ defaultIfUndefined: true })
+  // @type(Array)
   sorts = [];
 
   /**
     An optional sort
   */
-  @argument({ defaultIfUndefined: true })
-  @type(optional(Function))
+  // @argument({ defaultIfUndefined: true })
+  // @type(optional(Function))
   sortFunction = sortMultiple;
 
   /**
     An ordered array of the sorts applied to the table
   */
-  @argument({ defaultIfUndefined: true })
-  @type(optional(Function))
+  // @argument({ defaultIfUndefined: true })
+  // @type(optional(Function))
   compareFunction = compareValues;
 
   /**
     Flag that toggles reordering in the table
   */
-  @argument({ defaultIfUndefined: true })
-  @type('boolean')
+  // @argument({ defaultIfUndefined: true })
+  // @type('boolean')
   enableReorder = true;
 
   /**
     Flag that toggles resizing in the table
   */
-  @argument({ defaultIfUndefined: true })
-  @type('boolean')
+  // @argument({ defaultIfUndefined: true })
+  // @type('boolean')
   enableResize = true;
 
   /**
@@ -97,8 +97,8 @@ export default class EmberTHead extends Component {
     (resizing a column pushes or pulls all other columns) and `fluid` (resizing a
     column subtracts width from neighboring columns).
   */
-  @argument({ defaultIfUndefined: true })
-  @type('string')
+  // @argument({ defaultIfUndefined: true })
+  // @type('string')
   resizeMode = RESIZE_MODE.STANDARD;
 
   /**
@@ -109,51 +109,51 @@ export default class EmberTHead extends Component {
     * "first-column": extra space is added into the first column.
     * "last-column": extra space is added into the last column.
   */
-  @argument({ defaultIfUndefined: true })
-  @type('string')
+  // @argument({ defaultIfUndefined: true })
+  // @type('string')
   fillMode = FILL_MODE.EQUAL_COLUMN;
 
   /**
     Sets a constraint on the table's size, such that it must be greater than, less
     than, or equal to the size of the containing element.
   */
-  @argument({ defaultIfUndefined: true })
-  @type('string')
+  // @argument({ defaultIfUndefined: true })
+  // @type('string')
   widthConstraint = WIDTH_CONSTRAINT.NONE;
 
   /**
     A numeric adjustment to be applied to the constraint on the table's size.
   */
-  @argument
-  @type(optional('number'))
+  // @argument
+  // @type(optional('number'))
   containerWidthAdjustment = null;
 
   /**
     An action that is sent when sorts is updated
   */
-  @argument
-  @type(optional(Action))
+  // @argument
+  // @type(optional(Action))
   onHeaderAction = null;
 
   /**
     An action that is sent when sorts is updated
   */
-  @argument
-  @type(optional(Action))
+  // @argument
+  // @type(optional(Action))
   onUpdateSorts = null;
 
   /**
     An action that is sent when columns are reordered
   */
-  @argument
-  @type(optional(Action))
+  // @argument
+  // @type(optional(Action))
   onReorder = null;
 
   /**
     An action that is sent when columns are resized
   */
-  @argument
-  @type(optional(Action))
+  // @argument
+  // @type(optional(Action))
   onResize = null;
 
   init() {

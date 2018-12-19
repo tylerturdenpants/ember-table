@@ -1,12 +1,12 @@
 import Component from '@ember/component';
 import { computed } from '@ember-decorators/object';
-import { readOnly } from '@ember-decorators/object/computed';
+import { reads } from '@ember-decorators/object/computed';
 import { className, classNames, tagName } from '@ember-decorators/component';
 
-import { argument } from '@ember-decorators/argument';
-import { required } from '@ember-decorators/argument/validation';
-import { type, optional } from '@ember-decorators/argument/type';
-import { Action } from '@ember-decorators/argument/types';
+// import { argument } from '@ember-decorators/argument';
+// import { required } from '@ember-decorators/argument/validation';
+// import { type, optional } from '@ember-decorators/argument/type';
+// import { Action } from '@ember-decorators/argument/types';
 
 import { closest } from '../../-private/utils/element';
 
@@ -53,46 +53,46 @@ export default class EmberTr extends Component {
   /**
     The API object passed in by the table body, header, or footer
   */
-  @argument
-  @required
-  @type('object')
+  // @argument
+  // @required
+  // @type('object')
   api;
 
   /**
     Action sent when the user clicks this element
   */
-  @argument
-  @type(optional(Action))
+  // @argument
+  // @type(optional(Action))
   onClick;
 
   /**
     Action sent when the user double clicks this element
   */
-  @argument
-  @type(optional(Action))
+  // @argument
+  // @type(optional(Action))
   onDoubleClick;
 
-  @readOnly('api.rowValue')
+  @reads('api.rowValue')
   rowValue;
 
-  @readOnly('api.rowMeta')
+  @reads('api.rowMeta')
   rowMeta;
 
-  @readOnly('api.cells')
+  @reads('api.cells')
   cells;
 
-  @readOnly('api.rowSelectionMode')
+  @reads('api.rowSelectionMode')
   rowSelectionMode;
 
-  @readOnly('api.isHeader')
+  @reads('api.isHeader')
   isHeader;
 
   @className
-  @readOnly('rowMeta.isSelected')
+  @reads('rowMeta.isSelected')
   isSelected;
 
   @className
-  @readOnly('rowMeta.isGroupSelected')
+  @reads('rowMeta.isGroupSelected')
   isGroupSelected;
 
   init() {
