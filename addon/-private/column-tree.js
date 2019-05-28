@@ -19,7 +19,7 @@ import { assert } from '@ember/debug';
 
 const SCROLL_THRESHOLD = 50;
 
-const DEFAULT_COLUMN_WIDTH = 100;
+const DEFAULT_COLUMN_WIDTH = '';
 const DEFAULT_MIN_WIDTH = 50;
 const DEFAULT_MAX_WIDTH = Infinity;
 
