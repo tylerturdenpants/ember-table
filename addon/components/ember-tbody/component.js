@@ -243,7 +243,7 @@ export default Component.extend({
       items. This is much more convenient for most table operations in general.
     */
     this.collapseTree = CollapseTree.create({
-      sendAction: this.sendAction.bind(this),
+      onSelect: this.onSelect || (() => {}),
     });
 
     this._updateCollapseTree();

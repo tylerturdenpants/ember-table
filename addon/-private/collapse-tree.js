@@ -149,7 +149,7 @@ export const TableRowMeta = EmberObject.extend({
 
     if (single) {
       tree._lastSelectedIndex = null;
-      tree.sendAction('onSelect', rowValue);
+      tree.onSelect(rowValue);
       return;
     }
 
@@ -229,7 +229,7 @@ export const TableRowMeta = EmberObject.extend({
 
     selection = emberA(Array.from(selection));
 
-    tree.sendAction('onSelect', selection);
+    tree.onSelect(selection);
 
     tree._lastSelectedIndex = rowIndex;
   },

@@ -21,9 +21,9 @@ const fullTable = hbs`
         enableReorder=enableReorder
         widthConstraint=widthConstraint
 
-        onUpdateSorts="onUpdateSorts"
-        onReorder="onReorder"
-        onResize="onResize"
+        onUpdateSorts=(action "onUpdateSorts")
+        onReorder=(action "onReorder")
+        onResize=(action "onResize")
 
         as |h|
       }}
@@ -31,7 +31,7 @@ const fullTable = hbs`
           {{ember-th
             api=r
 
-            onContextMenu="onHeaderCellContextMenu"
+            onContextMenu=(action "onHeaderCellContextMenu")
           }}
         {{/ember-tr}}
       {{/ember-thead}}
@@ -49,7 +49,7 @@ const fullTable = hbs`
         idForFirstItem=idForFirstItem
 
 
-        onSelect="onSelect"
+        onSelect=(action "onSelect")
         selectingChildrenSelectsParent=selectingChildrenSelectsParent
         checkboxSelectionMode=checkboxSelectionMode
         rowSelectionMode=rowSelectionMode
@@ -60,16 +60,16 @@ const fullTable = hbs`
         {{#component rowComponent
           api=b
 
-          onClick="onRowClick"
-          onDoubleClick="onRowDoubleClick"
+          onClick=(action "onRowClick")
+          onDoubleClick=(action "onRowDoubleClick")
 
           as |r|
         }}
           {{#ember-td
             api=r
 
-            onClick="onCellClick"
-            onDoubleClick="onCellDoubleClick"
+            onClick=(action "onCellClick")
+            onDoubleClick=(action "onCellDoubleClick")
 
             as |value|
           }}
@@ -113,6 +113,8 @@ const defaultActions = {
 
   onRowClick() {},
   onRowDoubleClick() {},
+
+  onHeaderCellContextMenu() {},
 };
 
 export function generateTableValues(
@@ -148,9 +150,7 @@ export function generateTableValues(
   testContext.set('footerRows', footerRows);
 
   for (let action in defaultActions) {
-    let actions = testContext.actions || testContext._actions;
-
-    if (actions && !actions[action]) {
+    if (testContext && !testContext[action]) {
       testContext.on(action, defaultActions[action].bind(testContext));
     }
   }

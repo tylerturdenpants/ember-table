@@ -39,7 +39,7 @@ module('Integration | meta', function() {
               {{#ember-tr api=b as |r|}}
                 {{#ember-td
                   api=r
-                  onClick="onClick"
+                  onClick=(action "onClick")
 
                   as |value column row cellMeta columnMeta rowMeta|
                 }}
@@ -135,7 +135,7 @@ module('Integration | meta', function() {
               {{#ember-tr api=b as |r|}}
                 {{#ember-td
                   api=r
-                  onClick="onClick"
+                  onClick=(action "onClick")
 
                   as |value column row cellMeta columnMeta rowMeta|
                 }}
@@ -173,7 +173,7 @@ module('Integration | meta', function() {
               {{#ember-tr api=b as |r|}}
                 {{#ember-td
                   api=r
-                  onClick="onClick"
+                  onClick=(action "onClick")
 
                   as |value column row cellMeta columnMeta rowMeta|
                 }}

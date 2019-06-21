@@ -183,7 +183,8 @@ export default Component.extend({
     this.columnMetaCache = new Map();
 
     this.columnTree = ColumnTree.create({
-      sendAction: this.sendAction.bind(this),
+      onReorder: this.onReorder || (() => {}),
+      onResize: this.onResize || (() => {}),
       columnMetaCache: this.columnMetaCache,
       containerWidthAdjustment: this.containerWidthAdjustment,
     });
@@ -292,7 +293,9 @@ export default Component.extend({
   ),
 
   sendUpdateSort(newSorts) {
-    this.sendAction('onUpdateSorts', newSorts);
+    if (this.onUpdateSorts) {
+      this.onUpdateSorts(newSorts);
+    }
   },
 
   fillupHandler() {

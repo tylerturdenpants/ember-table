@@ -23,7 +23,9 @@ export default Component.extend({
   value: null,
 
   click(event) {
-    this.sendAction('onClick', event);
+    if (this.onClick) {
+      this.onClick(event);
+    }
   },
 
   change(event) {
@@ -36,6 +38,8 @@ export default Component.extend({
     this.element.checked = this.get('checked');
     this.element.indeterminate = this.get('indeterminate');
 
-    this.sendAction('onChange', checked, { value, indeterminate }, event);
+    if (this.onChange) {
+      this.onChange(checked, { value, indeterminate }, event);
+    }
   },
 });

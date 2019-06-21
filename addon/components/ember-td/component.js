@@ -158,6 +158,8 @@ export default BaseTableCell.extend({
       rowMeta,
     });
 
-    this.sendAction(action, values);
+    if (this[action]) {
+      this[action](action, values);
+    }
   },
 });

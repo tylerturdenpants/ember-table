@@ -119,11 +119,13 @@ export default Component.extend({
     let rowValue = this.get('rowValue');
     let rowMeta = this.get('rowMeta');
 
-    this.sendAction(action, {
-      event,
+    if (this[action]) {
+      this[action]({
+        event,
 
-      rowValue,
-      rowMeta,
-    });
+        rowValue,
+        rowMeta,
+      });
+    }
   },
 });
