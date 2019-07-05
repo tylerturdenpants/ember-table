@@ -47,7 +47,6 @@
     "@addepar/prettier-config": "^1.0.0",
     "@addepar/sass-lint-config": "^2.0.1",
     "@addepar/style-toolbox": "~0.7.0",
-    "@babel/core": "^7.2.2",
     "@babel/plugin-proposal-object-rest-spread": "^7.2.0",
     "@types/ember": "^2.8.22",
     "babel-eslint": "^8.2.3",
