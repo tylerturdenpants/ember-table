@@ -23,6 +23,7 @@
     "lint:files": "ember adde-lint --file-names"
   },
   "dependencies": {
+    "@babel/core": "^7.2.2",
     "@html-next/vertical-collection": "https://github.com/html-next/vertical-collection.git#ca8cab8a3204f99cca1cf7661e4170ac41dc3a07",
     "broccoli-string-replace": "^0.1.2",
     "css-element-queries": "^0.4.0",
@@ -49,7 +50,7 @@
     "@addepar/style-toolbox": "~0.7.0",
     "@babel/plugin-proposal-object-rest-spread": "^7.2.0",
     "@types/ember": "^2.8.22",
-    "babel-eslint": "^8.2.3",
+    "babel-eslint": "^10.0.1",
     "broccoli-asset-rev": "^3.0.0",
     "broccoli-funnel": "^2.0.2",
     "broccoli-merge-trees": "^3.0.0",
