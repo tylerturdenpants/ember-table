@@ -1,52 +1,32 @@
 import Component from '@ember/component';
-import { tagName, attribute } from '@ember-decorators/component';
-import { argument } from '@ember-decorators/argument';
-import { type, optional } from '@ember-decorators/argument/type';
-import { Action } from '@ember-decorators/argument/types';
+import defaultTo from '../../-private/utils/default-to';
 
-@tagName('input')
-export default class SimpleCheckbox extends Component {
-  value = null;
+export default Component.extend({
+  tagName: 'input',
 
-  @attribute
-  type = 'checkbox';
+  attributeBindings: [
+    'ariaLabel:aria-label',
+    'checked',
+    'disabled',
+    'indeterminate',
+    'type',
+    'value',
+  ],
 
-  @argument({ defaultIfUndefined: true })
-  @type('boolean')
-  @attribute
-  checked = false;
-
-  @argument({ defaultIfUndefined: true })
-  @type('boolean')
-  @attribute
-  disabled = false;
-
-  @argument({ defaultIfUndefined: true })
-  @type('boolean')
-  @attribute
-  indeterminate = false;
-
-  @argument
-  @type('any')
-  @attribute
-  value = null;
-
-  @argument
-  @type(optional(Action))
-  onClick = null;
-
-  @argument
-  @type(optional(Action))
-  onChange = null;
-
-  @argument
-  @type('string')
-  @attribute('aria-label')
-  ariaLabel;
+  ariaLabel: undefined,
+  checked: defaultTo(false),
+  disabled: defaultTo(false),
+  indeterminate: defaultTo(false),
+  onChange: null,
+  onClick: null,
+  type: 'checkbox',
+  value: null,
 
   click(event) {
-    this.sendAction('onClick', event);
-  }
+    if (this.onClick) {
+      this.onClick(event);
+    }
+  },
 
   change(event) {
     let checked = this.element.checked;
@@ -58,6 +38,8 @@ export default class SimpleCheckbox extends Component {
     this.element.checked = this.get('checked');
     this.element.indeterminate = this.get('indeterminate');
 
-    this.sendAction('onChange', checked, { value, indeterminate }, event);
-  }
-}
+    if (this.onChange) {
+      this.onChange(checked, { value, indeterminate }, event);
+    }
+  },
+});

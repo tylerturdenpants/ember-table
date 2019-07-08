@@ -1,23 +1,16 @@
 import Component from '@ember/component';
 import hbs from 'htmlbars-inline-precompile';
 
-import EmberObject, { get, set } from '@ember/object';
+import EmberObject, { get, setProperties, computed } from '@ember/object';
 import { A as emberA } from '@ember/array';
-
-import { tagName } from '@ember-decorators/component';
-import { argument } from '@ember-decorators/argument';
-
-import { computed } from '@ember-decorators/object';
 
 import { objectAt } from '../../-private/utils/array';
 import { dynamicAlias } from '../../-private/utils/computed';
 
-class CellWrapper extends EmberObject {
-  @dynamicAlias('rowValue', 'columnValue.valuePath')
-  cellValue;
+const CellWrapper = EmberObject.extend({
+  cellValue: dynamicAlias('rowValue', 'columnValue.valuePath'),
 
-  @computed('rowMeta', 'columnValue')
-  get cellMeta() {
+  cellMeta: computed('rowMeta', 'columnValue', function() {
     let rowMeta = get(this, 'rowMeta');
     let columnValue = get(this, 'columnValue');
 
@@ -26,49 +19,36 @@ class CellWrapper extends EmberObject {
     }
 
     return rowMeta._cellMetaCache.get(columnValue);
-  }
-}
+  }),
+});
 
 const layout = hbs`{{yield api}}`;
 
-@tagName('')
-export default class RowWrapper extends Component {
-  @argument
-  rowValue;
+export default Component.extend({
+  layout,
+  tagName: '',
 
-  @argument
-  columns;
-
-  @argument
-  columnMetaCache;
-
-  @argument
-  rowMetaCache;
-
-  @argument
-  canSelect;
-
-  @argument
-  rowSelectionMode;
-
-  @argument
-  checkboxSelectionMode;
+  canSelect: undefined,
+  checkboxSelectionMode: undefined,
+  columnMetaCache: undefined,
+  columns: undefined,
+  rowMetaCache: undefined,
+  rowSelectionMode: undefined,
+  rowValue: undefined,
 
   init() {
-    super.init(...arguments);
+    this._super(...arguments);
 
-    this.layout = layout;
     this._cells = emberA([]);
-  }
+  },
 
   destroy() {
     this._cells.forEach(cell => cell.destroy());
 
-    super.destroy(...arguments);
-  }
+    this._super(...arguments);
+  },
 
-  @computed('rowValue', 'rowMeta', 'cells', 'canSelect', 'rowSelectionMode')
-  get api() {
+  api: computed('rowValue', 'rowMeta', 'cells', 'canSelect', 'rowSelectionMode', function() {
     let rowValue = this.get('rowValue');
     let rowMeta = this.get('rowMeta');
     let cells = this.get('cells');
@@ -76,60 +56,60 @@ export default class RowWrapper extends Component {
     let rowSelectionMode = canSelect ? this.get('rowSelectionMode') : 'none';
 
     return { rowValue, rowMeta, cells, rowSelectionMode };
-  }
+  }),
 
-  @computed('rowValue')
-  get rowMeta() {
+  rowMeta: computed('rowValue', function() {
     let rowValue = this.get('rowValue');
     let rowMetaCache = this.get('rowMetaCache');
 
     return rowMetaCache.get(rowValue);
-  }
+  }),
 
-  @computed(
+  cells: computed(
     'rowValue',
     'rowMeta',
     'columns.[]',
     'canSelect',
     'checkboxSelectionMode',
-    'rowSelectionMode'
-  )
-  get cells() {
-    let columns = this.get('columns');
-    let numColumns = get(columns, 'length');
+    'rowSelectionMode',
+    function() {
+      let columns = this.get('columns');
+      let numColumns = get(columns, 'length');
 
-    let rowValue = this.get('rowValue');
-    let rowMeta = this.get('rowMeta');
-    let canSelect = this.get('canSelect');
-    let checkboxSelectionMode = canSelect ? this.get('checkboxSelectionMode') : 'none';
-    let rowSelectionMode = canSelect ? this.get('rowSelectionMode') : 'none';
+      let rowValue = this.get('rowValue');
+      let rowMeta = this.get('rowMeta');
+      let canSelect = this.get('canSelect');
+      let checkboxSelectionMode = canSelect ? this.get('checkboxSelectionMode') : 'none';
+      let rowSelectionMode = canSelect ? this.get('rowSelectionMode') : 'none';
 
-    let { _cells } = this;
+      let { _cells } = this;
 
-    if (numColumns !== _cells.length) {
-      while (_cells.length < numColumns) {
-        _cells.pushObject(CellWrapper.create());
+      if (numColumns !== _cells.length) {
+        while (_cells.length < numColumns) {
+          _cells.pushObject(CellWrapper.create());
+        }
+
+        while (_cells.length > numColumns) {
+          _cells.popObject().destroy();
+        }
       }
 
-      while (_cells.length > numColumns) {
-        _cells.popObject().destroy();
-      }
+      _cells.forEach((cell, i) => {
+        let columnValue = objectAt(columns, i);
+        let columnMeta = this.get('columnMetaCache').get(columnValue);
+
+        // eslint-disable-next-line ember/no-side-effects, ember-best-practices/no-side-effect-cp
+        setProperties(cell, {
+          checkboxSelectionMode,
+          columnMeta,
+          columnValue,
+          rowMeta,
+          rowSelectionMode,
+          rowValue,
+        });
+      });
+
+      return _cells;
     }
-
-    _cells.forEach((cell, i) => {
-      let columnValue = objectAt(columns, i);
-      let columnMeta = this.get('columnMetaCache').get(columnValue);
-
-      set(cell, 'checkboxSelectionMode', checkboxSelectionMode);
-      set(cell, 'rowSelectionMode', rowSelectionMode);
-
-      set(cell, 'columnValue', columnValue);
-      set(cell, 'columnMeta', columnMeta);
-
-      set(cell, 'rowValue', rowValue);
-      set(cell, 'rowMeta', rowMeta);
-    });
-
-    return _cells;
-  }
-}
+  ),
+});
